@@ -11,18 +11,18 @@ datasource db {
 }
 
 model User {
-  id       Int     @id @default(autoincrement())
+  id       String  @id @default(cuid())
   username String  @unique
   password String
   topic    Topic[]
 }
 
 model Topic {
-  id     Int    @id @default(autoincrement())
+  id     String @id @default(cuid())
   title  String
-  userId Int
+  userId String
   tags   Tag[]
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   Note   Note[]
 }
 
@@ -31,14 +31,14 @@ model Tag {
   name   String
   topic  Topic[]
   Note   Note?   @relation(fields: [noteId], references: [id])
-  noteId Int?
+  noteId String
 }
 
 model Note {
-  id      Int    @id @default(autoincrement())
+  id      String @id @default(cuid())
   type    String
   content String
   tags    Tag[]
-  topicId Int
+  topicId String
   topic   Topic  @relation(fields: [topicId], references: [id])
 }

@@ -1,20 +1,16 @@
 import NextAuth from "next-auth";
 import { prisma } from "./prisma";
-import credentials from "next-auth/providers/credentials";
-import { User } from "@prisma/client";
+import Credentials from "next-auth/providers/credentials";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  // trustHost: true,
   providers: [
-    credentials({
-      name: "Credentials",
+    Credentials({
       credentials: {
         username: {},
         password: {},
       },
-      async authorize(
-        credentials: Record<"username" | "password", string> | undefined
-      ) {
+      authorize: async (credentials) => {
+        console.log("credentials", credentials);
         let user = null;
 
         user = await prisma.user.findUnique({
@@ -30,25 +26,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         if (user.password !== credentials?.password) {
           throw new Error("Password not match.");
         }
+
         console.log("用户信息", user);
+
         return user as any | null;
       },
     }),
   ],
-  callbacks: {
-    async session({ session, token, user }: any) {
-      if (token) {
-        session.user = {
-          id: token.id,
-        };
-      }
-      return session;
-    },
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-      }
-      return token;
-    },
-  },
 });
