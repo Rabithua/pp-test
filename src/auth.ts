@@ -1,13 +1,14 @@
 import NextAuth from "next-auth";
-import { prisma } from "./prisma";
 import Credentials from "next-auth/providers/credentials";
+import { prisma } from "./lib/prisma";
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
+export const authConfig = {
   providers: [
     Credentials({
+      name: "Credentials",
       credentials: {
-        username: {},
-        password: {},
+        username: { label: "username", type: "text" },
+        password: { label: "password", type: "password" },
       },
       authorize: async (credentials) => {
         console.log("credentials", credentials);
@@ -15,7 +16,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         user = await prisma.user.findUnique({
           where: {
-            username: credentials?.username,
+            username: credentials?.username as string,
           },
         });
 
@@ -29,8 +30,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         console.log("用户信息", user);
 
-        return user as any | null;
+        return user as any;
       },
     }),
   ],
-});
+  pages: {
+    signIn: "/auth/login",
+  },
+};
+
+export const {
+  handlers: { GET, POST },
+  auth,
+  signIn,
+  signOut,
+} = NextAuth(authConfig);

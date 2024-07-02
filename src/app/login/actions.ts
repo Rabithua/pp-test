@@ -1,5 +1,5 @@
 "use server";
-import { auth, signIn } from "@/lib/auth";
+import { auth, signIn } from "@/auth";
 import { prisma } from "@/lib/prisma";
 
 export async function authCall() {
@@ -17,6 +17,7 @@ export async function authCall() {
 }
 
 export async function signUpM(params: any) {
+  console.log("signIn", signIn);
   const user = await prisma.user.findUnique({
     where: {
       username: params.username,
