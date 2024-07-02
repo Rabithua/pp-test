@@ -1,10 +1,12 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
-import { signUpM } from "./actions";
+import { useEffect, useState } from "react";
+import { authCall, signUpM } from "./actions";
+import { redirect, useRouter } from "next/navigation";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [loginData, setLoginData] = useState({
     username: "",
     password: "",
@@ -14,8 +16,23 @@ export default function LoginPage() {
     console.log("submit", loginData);
     let r = await signUpM(loginData);
     console.log(r);
+    if (r.code === 0) {
+      authCheck();
+    }
   }
-  
+
+  async function authCheck() {
+    let r = await authCall();
+    console.log(r);
+    if (r.code === 0) {
+      router.push("/dashboard");
+    }
+  }
+
+  useEffect(() => {
+    authCheck();
+  }, []);
+
   return (
     <div className=" h-dvh w-dvw flex flex-col justify-center items-center">
       <div className=" flex flex-col gap-4 p-4 rounded-xl border w-5/6 max-w-sm bg-white">
@@ -38,7 +55,7 @@ export default function LoginPage() {
             });
           }}
         />
-        <Button onClick={submit}>Login / SignUp</Button>
+        <Button onClick={submit}>Login</Button>
       </div>
     </div>
   );

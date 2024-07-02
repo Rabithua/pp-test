@@ -37,6 +37,22 @@ export const authConfig = {
   pages: {
     signIn: "/auth/login",
   },
+  callbacks: {
+    async session({ session, token, user }: any) {
+      if (token) {
+        session.user = {
+          id: token.id,
+        };
+      }
+      return session;
+    },
+    async jwt({ token, user }: any) {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+  },
 };
 
 export const {
