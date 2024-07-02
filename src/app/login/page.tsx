@@ -2,8 +2,10 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
-import { authCall, signUpM } from "./actions";
-import { redirect, useRouter } from "next/navigation";
+import { authCall, loginCall, signUpCall } from "./actions";
+import { useRouter } from "next/navigation";
+import { toast } from "@/components/ui/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -14,10 +16,43 @@ export default function LoginPage() {
 
   async function submit() {
     console.log("submit", loginData);
-    let r = await signUpM(loginData);
+    let r = await loginCall(loginData);
     console.log(r);
-    if (r.code === 0) {
-      authCheck();
+    if (r?.code === 0) {
+      router.push("/dashboard");
+    } else {
+      if (r?.code === 1) {
+        toast({
+          title: "Uh oh!",
+          description: "User not found,Sing up now?",
+          action: (
+            <ToastAction altText="SignUp" onClick={signUpFun}>
+              SignUp
+            </ToastAction>
+          ),
+        });
+      } else if (r?.code === 2) {
+        toast({
+          title: "Uh oh!",
+          description: "Password not match,pleasse try again.",
+        });
+      }
+    }
+  }
+
+  async function signUpFun() {
+    let r = await signUpCall(loginData);
+    console.log(r);
+    if (r?.code === 0) {
+      toast({
+        title: "Success!",
+        description: "Sign up success,please login now.",
+      });
+    } else {
+      toast({
+        title: "Uh oh!",
+        description: "Sign up error,please try again.",
+      });
     }
   }
 

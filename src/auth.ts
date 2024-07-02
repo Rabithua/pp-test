@@ -30,7 +30,9 @@ export const authConfig = {
 
         console.log("用户信息", user);
 
-        return user as any;
+        return {
+          id: user.id,
+        } as any;
       },
     }),
   ],
@@ -38,19 +40,23 @@ export const authConfig = {
     signIn: "/auth/login",
   },
   callbacks: {
-    async session({ session, token, user }: any) {
-      if (token) {
-        session.user = {
-          id: token.id,
-        };
-      }
-      return session;
-    },
-    async jwt({ token, user }: any) {
+    jwt({ token, account, user }: any) {
+      console.log("jwt", token, account, user);
       if (user) {
-        token.id = user.id;
+        return { ...token, id: user.id }; // Save id to token as docs says: https://next-auth.js.org/configuration/callbacks
       }
       return token;
+    },
+    session: ({ session, token, user }: any) => {
+      console.log("session", session, token, user);
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          // id: user.id, // This is copied from official docs which find user is undefined
+          id: token.id, // Get id from token instead
+        },
+      };
     },
   },
 };
