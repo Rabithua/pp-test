@@ -67,6 +67,7 @@ export async function db_GetAllTopics(userId: string) {
       userId: userId,
     },
     select: {
+      userId: true,
       id: true,
       title: true,
       content: true,
@@ -123,6 +124,7 @@ export async function db_UpdateTopic(topic: TopicWithNotes) {
     },
     select: {
       id: true,
+      userId: true,
       title: true,
       content: true,
       tags: true,

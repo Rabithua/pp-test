@@ -9,6 +9,7 @@ export type TopicWithNotes = {
 
 export type Note = {
   id?: string;
+  type?: string;
   order: number;
   title: string;
   content: string;

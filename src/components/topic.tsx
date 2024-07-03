@@ -33,8 +33,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "./ui/textarea";
 import { topicSchema } from "@/lib/zod";
 import { ToastAction } from "./ui/toast";
+import { Note } from "@prisma/client";
 
-export default function Topic(topic: TopicWithNotes) {
+export default function Topic(topic: any) {
+  console.log("topic", topic);
   const dialogRef = useRef(null);
   const topicsDispatch = useTopicsDispatch();
   const [dropOpen, setDropOpen] = useState(false);
@@ -74,7 +76,7 @@ export default function Topic(topic: TopicWithNotes) {
   }
 
   function addNote() {
-    setTopic_temp((prev) => {
+    setTopic_temp((prev: TopicWithNotes) => {
       return {
         ...prev,
         notes: [
@@ -107,7 +109,7 @@ export default function Topic(topic: TopicWithNotes) {
         type: "updateOne",
         topic: {
           ...topic,
-          notes: topic.notes.filter((n) => n.id !== id),
+          notes: topic.notes.filter((n: Note) => n.id !== id),
         },
       });
     }
@@ -120,6 +122,18 @@ export default function Topic(topic: TopicWithNotes) {
           Delete
         </ToastAction>
       ),
+    });
+  }
+
+  function copyShareUrl() {
+    console.log("copy share url");
+    navigator.clipboard.writeText(
+      `${window.location.origin}/topic/${topic.id}`
+    );
+    toast({
+      title: "Copied",
+      description: "Share URL copied to clipboard",
+      duration: 2000,
     });
   }
 
@@ -147,55 +161,65 @@ export default function Topic(topic: TopicWithNotes) {
   return (
     <div className=" flex flex-col gap-2 h-fit pb-6">
       <div className=" m-4 mb-0 p-4 flex relative flex-col gap-2 max-w-5/6 w-80 bg-white border">
-        <div className=" absolute right-4 top-4">
-          <DropdownMenu open={dropOpen} onOpenChange={setDropOpen}>
-            <DropdownMenuTrigger>
-              <Menu
-                className=" w-4"
-                onClick={() => {
-                  setDropOpen(!dropOpen);
-                }}
-              />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuLabel>Menu</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={() => {
-                  setDialogOpen(true);
-                }}
-              >
-                Edit
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={deleteTopic}>Delete</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+        {topic.userId === topic.uid && (
+          <div className=" absolute right-4 top-4">
+            <DropdownMenu open={dropOpen} onOpenChange={setDropOpen}>
+              <DropdownMenuTrigger>
+                <Menu
+                  className=" w-4"
+                  onClick={() => {
+                    setDropOpen(!dropOpen);
+                  }}
+                />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuLabel>Menu</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={() => {
+                    setDialogOpen(true);
+                  }}
+                >
+                  Edit
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={deleteTopic}>
+                  Delete
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={copyShareUrl}>
+                  Share
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        )}
         <div className=" font-semibold text-lg max-w-60">{topic.title}</div>
         <div className=" text-base">{topic.content}</div>
         <div className=" flex flex-row gap-2 flex-wrap">
-          {topic.tags.split(" ").map((tag: string) => (
-            <div
-              key={tag}
-              className=" bg-slate-100 py-1 px-2 rounded-sm text-sm"
-            >
-              {tag}
-            </div>
-          ))}
+          {topic.tags &&
+            topic.tags.split(" ").map((tag: string) => (
+              <div
+                key={tag}
+                className=" bg-slate-100 py-1 px-2 rounded-sm text-sm"
+              >
+                {tag}
+              </div>
+            ))}
         </div>
       </div>
-      {topic.notes.map((note) => {
+      {topic.notes.map((note: Note) => {
         return (
           <div
             key={note.order}
             className=" relative mx-4 my-2 p-4 flex flex-col gap-2 max-w-5/6 w-80 bg-slate-200 border"
           >
-            <Trash2
-              className=" cursor-pointer absolute top-4 right-4 w-4"
-              onClick={() => {
-                deleteNote(note.id || "");
-              }}
-            />
+            {topic.userId === topic.uid && (
+              <Trash2
+                className=" cursor-pointer absolute top-4 right-4 w-4"
+                onClick={() => {
+                  deleteNote(note.id || "");
+                }}
+              />
+            )}
             <div className=" font-semibold text-lg max-w-60">{note.title}</div>
             <div className=" text-base">{note.content}</div>
             <div className=" flex flex-row gap-2 flex-wrap">
@@ -234,7 +258,7 @@ export default function Topic(topic: TopicWithNotes) {
                 defaultValue={topic_temp.title}
                 className="col-span-3"
                 onChange={(e) => {
-                  setTopic_temp((prev) => {
+                  setTopic_temp((prev: TopicWithNotes) => {
                     return {
                       ...prev,
                       title: e.target.value,
@@ -252,7 +276,7 @@ export default function Topic(topic: TopicWithNotes) {
                 defaultValue={topic_temp.content}
                 className="col-span-3"
                 onChange={(e) => {
-                  setTopic_temp((prev) => {
+                  setTopic_temp((prev: TopicWithNotes) => {
                     return {
                       ...prev,
                       content: e.target.value,
@@ -270,7 +294,7 @@ export default function Topic(topic: TopicWithNotes) {
                 placeholder="tag1 tag2 tag3"
                 className="col-span-3"
                 onChange={(e) => {
-                  setTopic_temp((prev) => {
+                  setTopic_temp((prev: TopicWithNotes) => {
                     return {
                       ...prev,
                       tags: e.target.value,
@@ -280,7 +304,7 @@ export default function Topic(topic: TopicWithNotes) {
                 defaultValue={topic_temp.tags}
               />
             </div>
-            {topic_temp.notes.map((note, index) => {
+            {topic_temp.notes.map((note: Note, index: number) => {
               return (
                 <div className="grid gap-4 py-4 border-t" key={note.order}>
                   <div className="grid grid-cols-4 items-center gap-4">
@@ -292,10 +316,10 @@ export default function Topic(topic: TopicWithNotes) {
                       className="col-span-3"
                       defaultValue={note.title}
                       onChange={(e) => {
-                        setTopic_temp((prev) => {
+                        setTopic_temp((prev: TopicWithNotes) => {
                           return {
                             ...prev,
-                            notes: prev.notes.map((n, i) => {
+                            notes: prev.notes.map((n: any, i: number) => {
                               if (i === index) {
                                 return {
                                   ...n,
@@ -318,10 +342,10 @@ export default function Topic(topic: TopicWithNotes) {
                       className="col-span-3"
                       defaultValue={note.content}
                       onChange={(e) => {
-                        setTopic_temp((prev) => {
+                        setTopic_temp((prev: TopicWithNotes) => {
                           return {
                             ...prev,
-                            notes: prev.notes.map((n, i) => {
+                            notes: prev.notes.map((n: any, i: number) => {
                               if (i === index) {
                                 return {
                                   ...n,
@@ -345,10 +369,10 @@ export default function Topic(topic: TopicWithNotes) {
                       placeholder="tag1 tag2 tag3"
                       defaultValue={note.tags}
                       onChange={(e) => {
-                        setTopic_temp((prev) => {
+                        setTopic_temp((prev: TopicWithNotes) => {
                           return {
                             ...prev,
-                            notes: prev.notes.map((n, i) => {
+                            notes: prev.notes.map((n: any, i: number) => {
                               if (i === index) {
                                 return {
                                   ...n,

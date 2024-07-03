@@ -81,7 +81,7 @@ export default function DashboardPage() {
             ref={scrollMain}
           >
             {topics.map((topic) => {
-              return <Topic key={topic.id} {...topic} />;
+              return <Topic key={topic.id} {...topic} uid={user.id} />;
             })}
           </div>
           <AddTopicButton user={user} scroll={scrollHandler} />
