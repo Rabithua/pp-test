@@ -1,4 +1,5 @@
 "use server";
+import { signOut } from "@/auth";
 import { prisma } from "@/lib/prisma";
 
 export async function db_findUser(id: string) {
@@ -15,4 +16,9 @@ export async function db_findUser(id: string) {
     msg: "ok",
     data: user,
   };
+}
+
+export async function signOutCall() {
+  await signOut();
+  return;
 }

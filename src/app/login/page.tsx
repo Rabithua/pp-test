@@ -6,6 +6,7 @@ import { authCall, loginCall, signUpCall } from "./actions";
 import { useRouter } from "next/navigation";
 import { toast } from "@/components/ui/use-toast";
 import { ToastAction } from "@/components/ui/toast";
+import { loginFormSchema } from "@/lib/zod";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -16,6 +17,14 @@ export default function LoginPage() {
 
   async function submit() {
     console.log("submit", loginData);
+    let m = loginFormSchema.safeParse(loginData);
+    if (!m.success) {
+      toast({
+        title: "Uh oh!",
+        description: JSON.parse(m.error.message)[0].message,
+      });
+      return;
+    }
     let r = await loginCall(loginData);
     console.log(r);
     if (r?.code === 0) {
@@ -88,6 +97,11 @@ export default function LoginPage() {
               ...loginData,
               password: e.target.value,
             });
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              submit();
+            }
           }}
         />
         <Button onClick={submit}>Login</Button>
