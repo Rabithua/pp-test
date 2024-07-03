@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Button } from "./ui/button";
 import { DialogHeader, DialogFooter } from "./ui/dialog";
 import { Textarea } from "./ui/textarea";
@@ -20,6 +20,7 @@ import { useTopics, useTopicsDispatch } from "@/state/topics";
 import { Plus } from "lucide-react";
 
 export default function AddTopicButton({ user, scroll }: any) {
+  const dialogRef = useRef<HTMLDivElement>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const topics = useTopics();
   const topicsDispatch = useTopicsDispatch();
@@ -46,6 +47,15 @@ export default function AddTopicButton({ user, scroll }: any) {
         ],
       };
     });
+
+    // 滑动到容器底部
+    setTimeout(() => {
+      console.log(dialogRef);
+      if (dialogRef.current) {
+        // @ts-ignore
+        dialogRef.current.scrollTop = dialogRef.current.scrollHeight;
+      }
+    }, 0);
   }
 
   async function submit() {
@@ -94,7 +104,10 @@ export default function AddTopicButton({ user, scroll }: any) {
             Create a new topic with notes and tags
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4 px-2 max-h-[60dvh] overflow-y-scroll">
+        <div
+          className="grid gap-4 py-4 px-2 max-h-[60dvh] overflow-y-scroll scroll-smooth"
+          ref={dialogRef}
+        >
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="title" className="text-right">
               Title

@@ -34,6 +34,7 @@ import { Textarea } from "./ui/textarea";
 import { topicSchema } from "@/lib/zod";
 import { ToastAction } from "./ui/toast";
 import { Note } from "@prisma/client";
+import NoteCard from "./note";
 
 export default function Topic(topic: any) {
   console.log("topic", topic);
@@ -98,31 +99,6 @@ export default function Topic(topic: any) {
         dialogRef.current.scrollTop = dialogRef.current.scrollHeight;
       }
     }, 0);
-  }
-
-  function deleteNote(id: string) {
-    console.log("delete note");
-    async function deleteM() {
-      let r = await db_DeleteNote(id);
-      console.log(r);
-      topicsDispatch({
-        type: "updateOne",
-        topic: {
-          ...topic,
-          notes: topic.notes.filter((n: Note) => n.id !== id),
-        },
-      });
-    }
-    toast({
-      title: "Note Deleted",
-      description: "Note will be deleted, you sure?",
-      duration: 5000,
-      action: (
-        <ToastAction altText="DeleteNotes" onClick={deleteM}>
-          Delete
-        </ToastAction>
-      ),
-    });
   }
 
   function copyShareUrl() {
@@ -207,34 +183,7 @@ export default function Topic(topic: any) {
         </div>
       </div>
       {topic.notes.map((note: Note) => {
-        return (
-          <div
-            key={note.order}
-            className=" relative mx-4 my-2 p-4 flex flex-col gap-2 max-w-5/6 w-80 bg-slate-200 border"
-          >
-            {topic.userId === topic.uid && (
-              <Trash2
-                className=" cursor-pointer absolute top-4 right-4 w-4"
-                onClick={() => {
-                  deleteNote(note.id || "");
-                }}
-              />
-            )}
-            <div className=" font-semibold text-lg max-w-60">{note.title}</div>
-            <div className=" text-base">{note.content}</div>
-            <div className=" flex flex-row gap-2 flex-wrap">
-              {note.tags &&
-                note.tags.split(" ").map((tag: string) => (
-                  <div
-                    key={tag}
-                    className=" cursor-pointer bg-slate-100 py-1 px-2 rounded-sm text-sm"
-                  >
-                    {tag}
-                  </div>
-                ))}
-            </div>
-          </div>
-        );
+        return <NoteCard key={note.id} note={note} topic={topic}></NoteCard>;
       })}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogTrigger></DialogTrigger>
