@@ -18,27 +18,22 @@ model User {
 }
 
 model Topic {
-  id     String @id @default(cuid())
-  title  String
-  userId String
-  tags   Tag[]
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  Note   Note[]
-}
-
-model Tag {
-  id     Int     @id @default(autoincrement())
-  name   String
-  topic  Topic[]
-  Note   Note?   @relation(fields: [noteId], references: [id])
-  noteId String
+  id      String @id @default(cuid())
+  title   String
+  content String
+  userId  String
+  tags    String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notes   Note[]
 }
 
 model Note {
   id      String @id @default(cuid())
-  type    String
+  type    String @default("note")
+  title   String
+  order   Int
   content String
-  tags    Tag[]
+  tags    String
   topicId String
   topic   Topic  @relation(fields: [topicId], references: [id])
 }
