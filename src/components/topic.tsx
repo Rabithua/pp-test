@@ -145,13 +145,13 @@ export default function Topic(topic: TopicWithNotes) {
   }
 
   return (
-    <div className=" flex flex-col gap-2">
+    <div className=" flex flex-col gap-2 h-fit pb-6">
       <div className=" m-4 mb-0 p-4 flex relative flex-col gap-2 max-w-5/6 w-80 bg-white border">
         <div className=" absolute right-4 top-4">
           <DropdownMenu open={dropOpen} onOpenChange={setDropOpen}>
             <DropdownMenuTrigger>
               <Menu
-                className=" h-6 w-6 text-slate-400 mr-4"
+                className=" w-4"
                 onClick={() => {
                   setDropOpen(!dropOpen);
                 }}
@@ -160,14 +160,12 @@ export default function Topic(topic: TopicWithNotes) {
             <DropdownMenuContent>
               <DropdownMenuLabel>Menu</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <div
-                  onClick={() => {
-                    setDialogOpen(true);
-                  }}
-                >
-                  Edit
-                </div>
+              <DropdownMenuItem
+                onClick={() => {
+                  setDialogOpen(true);
+                }}
+              >
+                Edit
               </DropdownMenuItem>
               <DropdownMenuItem onClick={deleteTopic}>Delete</DropdownMenuItem>
             </DropdownMenuContent>
@@ -214,7 +212,6 @@ export default function Topic(topic: TopicWithNotes) {
           </div>
         );
       })}
-
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogTrigger></DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
@@ -224,7 +221,10 @@ export default function Topic(topic: TopicWithNotes) {
               Edit a topic with notes and tags
             </DialogDescription>
           </DialogHeader>
-          <div className="grid gap-4 py-4 px-2 max-h-[60dvh] overflow-y-scroll scroll-smooth" ref={dialogRef}>
+          <div
+            className="grid gap-4 py-4 px-2 max-h-[60dvh] overflow-y-scroll scroll-smooth"
+            ref={dialogRef}
+          >
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="title" className="text-right">
                 Title

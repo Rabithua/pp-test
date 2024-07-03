@@ -71,7 +71,7 @@ export default function DashboardPage() {
         <div className=" h-dvh w-dvw flex flex-col bg-slate-50">
           <div className=" z-10 sticky top-0 w-full p-4 border-b bg-slate-50 flex items-center gap-4 justify-end">
             <div className=" font-semibold ">{user.username}</div>
-            <Button variant="ghost" onClick={scrollHandler}>
+            <Button variant="ghost" onClick={logOutFun}>
               <LogOut className="mr-2 h-4 w-4" />
               LogOut
             </Button>
