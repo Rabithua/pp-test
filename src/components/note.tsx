@@ -13,12 +13,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
-import { TopicWithNotes } from "@/lib/type";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
 import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function NoteCard({ note, topic }: any) {
   const topicsDispatch = useTopicsDispatch();
@@ -78,33 +78,46 @@ export default function NoteCard({ note, topic }: any) {
 
   return (
     <>
-      <div
-        className=" relative mx-4 my-2 p-4 flex flex-col gap-2 max-w-5/6 w-80 bg-slate-200 border"
-        onClick={noteClickHandle}
-      >
-        {topic.userId === topic.uid && (
-          <Trash2
-            className=" cursor-pointer absolute top-4 right-4 w-4"
-            onClick={(e) => {
-              e.stopPropagation();
-              deleteNote(note.id || "");
-            }}
-          />
-        )}
-        <div className=" font-semibold text-lg max-w-60">{note.title}</div>
-        <div className=" text-base">{note.content}</div>
-        <div className=" flex flex-row gap-2 flex-wrap">
-          {note.tags &&
-            note.tags.split(" ").map((tag: string) => (
-              <div
-                key={tag}
-                className=" cursor-pointer bg-slate-100 py-1 px-2 rounded-sm text-sm"
-              >
-                {tag}
-              </div>
-            ))}
-        </div>
-      </div>
+      <AnimatePresence>
+        <motion.div
+          className=" cursor-pointer relative mx-4 my-2 p-4 flex flex-col gap-2 max-w-5/6 w-80 bg-slate-200 border"
+          onClick={noteClickHandle}
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{
+            duration: 0.8,
+            ease: [0, 0.71, 0.2, 1.01],
+          }}
+          exit={{ opacity: 0, scale: 0 }}
+          whileHover={{ scale: 0.95 }}
+          whileTap={{
+            scale: 0.9,
+          }}
+        >
+          {topic.userId === topic.uid && (
+            <Trash2
+              className=" cursor-pointer absolute top-4 right-4 w-4"
+              onClick={(e) => {
+                e.stopPropagation();
+                deleteNote(note.id || "");
+              }}
+            />
+          )}
+          <div className=" font-semibold text-lg max-w-60">{note.title}</div>
+          <div className=" text-base">{note.content}</div>
+          <div className=" flex flex-row gap-2 flex-wrap">
+            {note.tags &&
+              note.tags.split(" ").map((tag: string) => (
+                <div
+                  key={tag}
+                  className=" cursor-pointer bg-slate-100 py-1 px-2 rounded-sm text-sm"
+                >
+                  {tag}
+                </div>
+              ))}
+          </div>
+        </motion.div>
+      </AnimatePresence>
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogTrigger></DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
@@ -162,7 +175,7 @@ export default function NoteCard({ note, topic }: any) {
                   setNote_temp((prev: Note) => {
                     return {
                       ...prev,
-                      tags: e.target.value,
+                      tags: e.target.value.trim(),
                     };
                   });
                 }}

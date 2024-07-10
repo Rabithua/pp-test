@@ -9,13 +9,19 @@ import { LogOut } from "lucide-react";
 import Topic from "@/components/topic";
 import { useTopics, useTopicsDispatch } from "@/state/topics";
 import AddTopicButton from "@/components/TopicModal";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 export default function DashboardPage() {
-  const scrollMain = useRef<HTMLDivElement>(null);
+  const scrollMain = useRef<any>(null);
   const [user, setUser] = useState<any>(null);
   const router = useRouter();
   const topics = useTopics();
   const topicsDispatch = useTopicsDispatch();
+
+  const { scrollYProgress, scrollXProgress } = useScroll({
+    container: scrollMain,
+  });
+  const scale = useTransform(scrollYProgress, [0, 1], [0.2, 2]);
 
   async function getAllTopic() {
     let r = await db_GetAllTopics(user.id);
@@ -47,13 +53,15 @@ export default function DashboardPage() {
   }
 
   function scrollHandler() {
-    if (scrollMain.current) {
-      scrollMain.current.scrollTo({
-        top: 0,
-        left: scrollMain.current.scrollWidth,
-        behavior: "smooth",
-      });
-    }
+    setTimeout(() => {
+      if (scrollMain.current) {
+        scrollMain.current.scrollTo({
+          top: 0,
+          left: scrollMain.current.scrollWidth,
+          behavior: "smooth",
+        });
+      }
+    }, 100);
   }
 
   useEffect(() => {
@@ -77,7 +85,7 @@ export default function DashboardPage() {
             </Button>
           </div>
           <div
-            className=" w-full h-max flex-grow flex flex-row overflow-scroll"
+            className=" w-full h-max flex-grow flex flex-row overflow-x-scroll"
             ref={scrollMain}
           >
             {topics.map((topic) => {

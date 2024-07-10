@@ -92,6 +92,7 @@ export default function LoginPage() {
         />
         <Input
           placeholder="password"
+          type="password"
           onChange={(e) => {
             setLoginData({
               ...loginData,

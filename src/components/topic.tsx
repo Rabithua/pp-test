@@ -35,9 +35,9 @@ import { topicSchema } from "@/lib/zod";
 import { ToastAction } from "./ui/toast";
 import { Note } from "@prisma/client";
 import NoteCard from "./note";
+import { motion } from "framer-motion";
 
 export default function Topic(topic: any) {
-  console.log("topic", topic);
   const dialogRef = useRef(null);
   const topicsDispatch = useTopicsDispatch();
   const [dropOpen, setDropOpen] = useState(false);
@@ -136,7 +136,15 @@ export default function Topic(topic: any) {
 
   return (
     <div className=" flex flex-col gap-2 h-fit pb-6">
-      <div className=" m-4 mb-0 p-4 flex relative flex-col gap-2 max-w-5/6 w-80 bg-white border">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{
+          duration: 0.8,
+          ease: [0, 0.71, 0.2, 1.01],
+        }}
+        className=" m-4 mb-0 p-4 flex relative flex-col gap-2 max-w-5/6 w-80 bg-white border"
+      >
         {topic.userId === topic.uid && (
           <div className=" absolute right-4 top-4">
             <DropdownMenu open={dropOpen} onOpenChange={setDropOpen}>
@@ -181,7 +189,7 @@ export default function Topic(topic: any) {
               </div>
             ))}
         </div>
-      </div>
+      </motion.div>
       {topic.notes.map((note: Note) => {
         return <NoteCard key={note.id} note={note} topic={topic}></NoteCard>;
       })}
@@ -246,7 +254,7 @@ export default function Topic(topic: any) {
                   setTopic_temp((prev: TopicWithNotes) => {
                     return {
                       ...prev,
-                      tags: e.target.value,
+                      tags: e.target.value.trim(),
                     };
                   });
                 }}
@@ -325,7 +333,7 @@ export default function Topic(topic: any) {
                               if (i === index) {
                                 return {
                                   ...n,
-                                  tags: e.target.value,
+                                  tags: e.target.value.trim(),
                                 };
                               }
                               return n;

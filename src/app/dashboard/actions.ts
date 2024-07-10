@@ -40,6 +40,7 @@ export async function db_CreatTopic(topic: TopicWithNotes, userId: string) {
       title: true,
       content: true,
       tags: true,
+      userId: true,
       notes: {
         select: {
           order: true,
