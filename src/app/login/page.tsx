@@ -21,6 +21,7 @@ export default function LoginPage() {
     if (!m.success) {
       toast({
         title: "Uh oh!",
+        duration: 2000,
         description: JSON.parse(m.error.message)[0].message,
       });
       return;
@@ -33,6 +34,7 @@ export default function LoginPage() {
       if (r?.code === 1) {
         toast({
           title: "Uh oh!",
+          duration: 2000,
           description: "User not found,Sing up now?",
           action: (
             <ToastAction altText="SignUp" onClick={signUpFun}>
@@ -43,6 +45,7 @@ export default function LoginPage() {
       } else if (r?.code === 2) {
         toast({
           title: "Uh oh!",
+          duration: 2000,
           description: "Password not match,pleasse try again.",
         });
       }
@@ -55,11 +58,13 @@ export default function LoginPage() {
     if (r?.code === 0) {
       toast({
         title: "Success!",
+        duration: 2000,
         description: "Sign up success,please login now.",
       });
     } else {
       toast({
         title: "Uh oh!",
+        duration: 2000,
         description: "Sign up error,please try again.",
       });
     }

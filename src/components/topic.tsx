@@ -67,7 +67,7 @@ export default function Topic(topic: any) {
     toast({
       title: "Topic Deleted",
       description: "Topic will be deleted, you sure?",
-      duration: 5000,
+      duration: 2000,
       action: (
         <ToastAction altText="DeleteNotes" onClick={deleteM}>
           Delete

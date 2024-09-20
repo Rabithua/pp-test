@@ -7,6 +7,7 @@ First, run the development server:
 ```bash
 nvm use 21
 
+npm i
 npm run dev
 # or
 yarn dev

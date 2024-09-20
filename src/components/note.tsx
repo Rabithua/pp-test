@@ -41,7 +41,7 @@ export default function NoteCard({ note, topic }: any) {
     toast({
       title: "Note Deleted",
       description: "Note will be deleted, you sure?",
-      duration: 5000,
+      duration: 2000,
       action: (
         <ToastAction altText="DeleteNotes" onClick={deleteM}>
           Delete
@@ -95,14 +95,17 @@ export default function NoteCard({ note, topic }: any) {
           }}
         >
           {topic.userId === topic.uid && (
-            <Trash2
-              className=" cursor-pointer absolute top-4 right-4 w-4"
+            <div
+              className=" duration-300 hover:bg-black/10 p-2 rounded-md w-fit cursor-pointer absolute top-4 right-4"
               onClick={(e) => {
                 e.stopPropagation();
                 deleteNote(note.id || "");
               }}
-            />
+            >
+              <Trash2 className=" w-4 h-4" />
+            </div>
           )}
+
           <div className=" font-semibold text-lg max-w-60">{note.title}</div>
           <div className=" text-base">{note.content}</div>
           <div className=" flex flex-row gap-2 flex-wrap">

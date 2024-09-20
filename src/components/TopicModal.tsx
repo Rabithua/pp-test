@@ -86,7 +86,7 @@ export default function AddTopicButton({ user, scroll }: any) {
   }
 
   return (
-    <Dialog open={dialogOpen}>
+    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger>
         <div
           className=" fixed bottom-10 right-10 rounded-2xl bg-slate-800 z-10 p-4"
